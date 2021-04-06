@@ -1,7 +1,4 @@
-import generators.AppearanceGenerator;
-import generators.FioGenerator;
-import generators.PhoneGenerator;
-import generators.PhysGenerator;
+import generators.*;
 import person.Person;
 import person.Phone;
 import person.Physical;
@@ -15,12 +12,9 @@ public class InputProcessor {
         if (input.trim().matches("\\d{4}")) {
             // Создаём Person
             final int intCode = Integer.parseInt(input);
-
             final FioGenerator fioGenerator = new FioGenerator();
             fioGenerator.generateParams(intCode);
-            final String lastName = fioGenerator.getLastName();
-            final String firstName = fioGenerator.getFirstName();
-            final String middleName = fioGenerator.getMiddleName();
+            Fio fio = fioGenerator.getFio();
 
             final PhysGenerator physGenerator = new PhysGenerator();
             physGenerator.generateParams(intCode);
@@ -38,14 +32,18 @@ public class InputProcessor {
                 phone = phoneGenerator.buildResponse();
             }
 
-            result = new Person(input,
-                    lastName, firstName, middleName,
-                    physical,
-                    appearance,
-                    phone).toString();
+            result = new Person.PersonBuilder(input)
+                    .withFio(fio)
+                    .withPhys(physical)
+                    .withAppearance(appearance)
+                    .withPhone(phone)
+                    .build()
+                    .toString();
         } else {
             result = "Неверный ввод.";
         }
         return result;
     }
+
+
 }
